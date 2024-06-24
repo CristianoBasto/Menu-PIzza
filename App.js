@@ -1,71 +1,183 @@
-import React, {Component} from "react";
-import { Text, View, StyleSheet} from 'react-native'
+import React, { Component } from "react";
+import { Text, View, StyleSheet, Switch, TextInput, Button, Alert, TouchableOpacity} from "react-native"
 
+import Slider from '@react-native-community/slider';
 import {Picker} from '@react-native-picker/picker';
 
-class App extends Component{
 
-  constructor(props){
+
+class App extends Component {
+
+  constructor(props) {
     super(props);
-    this.state={
-      pizza:0,
-      pizzas:[
-        {key:1, nome:'Strogonoff', valor: 35.90},
-        {key:2, nome:'Calabresa', valor: 59.00},
-        {key:3, nome:'Quatro queijo', valor: 37},
-        {key:4, nome:'Brigadeiro', valor: 25.70},
-        {key:5, nome:'Frango Catupiri', valor: 30},
-
-      ]
-
-
+    this.state = {
+      nome:'',
+      idade:'',
+      status: false,
+      valor:250,
+      sexo:0,
+    sexos:[
+      {key: 0, nome: 'Masculino'},
+      {key: 1, nome: 'Feminino'},
+    ],
+  
+     
     };
-  }
-  render(){
+    this.alertar = this.alertar.bind(this);
 
-    let pizzasItem = this.state.pizzas.map( (v, k) => {
-      return <Picker.Item key={k} value={k} label={v.nome}/>
+  }
+
+  alertar(){
+    if(this.state.nome === '' || this.state.idade === ''){
+      alert('Preencha todos dados corretamente!')
+      return;
+    }
+    alert(
+
+      'Conta aberta com sucesso!! \n\n' + 
+      'Nome: '+this.state.nome + '\n' + 
+      'Idade: ' + this.state.idade + '\n' +
+      'Sexo: '+ this.state.sexos[this.state.sexo].nome + ' \n' +
+      'Limite Conta: R$ ' + this.state.valor.toFixed(2) + '\n' +
+      'Conta Estudante: ' + ((this.state.status)? 'Ativo' : 'Inativo')
+    
+    );
+      
+  }
+  render() {
+
+    let sexoItem = this.state.sexos.map((v, k) => {
+      return <Picker.Item key={k} value={k} label={v.nome} />
     })
-    return(
+
+    return (
 
       <View style={styles.container}>
-       <Text style={styles.logo}> Menu Pizza</Text>
 
-         <Picker 
-         selectedValue={this.state.pizza}
-         onValueChange={(itemValue, itemIdex)=> this.setState({pizza: itemValue})}
-         >
-          {pizzasItem}
-         </Picker>
-       <Text style={styles.pizzas}> Vocês escolheu: {this.state.pizzas[this.state.pizza].nome}</Text>
-       <Text style={styles.pizzas}> R$: {this.state.pizzas[this.state.pizza].valor.toFixed(2)}</Text>
+        <Text style={styles.textoTitulo}> - Banco React - </Text>
+        <TextInput style={styles.input}
+          placeholder="Digite seu nome"
+          underlineColorAndroid="transparent"
+          onChangeText={(texto)=> this.setState({nome: texto})}
+
+        />
+
+        <TextInput style={styles.input}
+          placeholder="Digite sua idade"
+          underlineColorAndroid="transparent"
+          onChangeText={(texto)=> this.setState({idade: texto})}
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.Texto2}> Qual seu Sexo:</Text>
+        
+        <Picker style={styles.textoPicker}
+          selectedValue={this.state.sexo}
+          onValueChange={(itemValue, itemIdex) => this.setState({ sexo: itemValue})}>
+
+          {sexoItem}
+         
+        </Picker>
        
+        <Text style={styles.Texto2}> Seu Limite : R$ {this.state.valor.toFixed(2)}</Text>
+        
+        <Slider
+          style={styles.textoSlider}
+          minimumValue={0}
+          maximumValue={1000}
+          onValueChange={(valorSelecionado) => this.setState({ valor: valorSelecionado })}
+          minimumTrackTintColor="blue"
+          maximumTrackTintColor="red"
+        />
+
+
+        <Text style={styles.Texto2}> Você é estudante? </Text>
+        <Switch style={styles.textoSwitch}
+        value={this.state.status}
+        onValueChange={(valorSwitch)=> this.setState({status: valorSwitch})}
+        
+        />
+
+        
+        <TouchableOpacity style={styles.botao} onPress={this.alertar} underlayColor="#000000">
+            <Text style={styles.textoBotao}>Abrir Conta</Text>
+        </TouchableOpacity>
+          
+        
+
       </View>
-      
+
     );
+
   }
 }
 
 const styles = StyleSheet.create({
-container:{
-  flex: 1,
-  marginTop: 20,
-},
+  container: {
+    flex: 1,
+  },
 
-logo:{
-  textAlign:'center',
-  fontSize: 30,
-  fontWeight:'bold'
+  textoTitulo:{
+    fontSize:32,
+    textAlign:'center',
+    marginTop:20
+  },
+  input:{
+    height:45,
+    width:350,
+    borderWidth:1,
+    borderColor:'#222',
+    margin:10,
+    fontSize:22,
+    marginHorizontal:'auto',
+  },
+  Texto2:{
+    marginTop:40,
+    margin:25,
+    fontSize:22,
+    lineHeight:25,
+    marginTop:15
+  },
 
-},
+  textoPicker:{
+    
+    marginHorizontal:180,
+    marginTop:-65,
+    marginRight:10,
+  
+  },
 
-pizzas:{
-  marginTop:15,
-  fontSize:28,
-  textAlign: 'center'
+  textoSlider:{
+    width:150,
+    margin: 40,
+    marginRight:250,
+    marginTop:-45,
+    flexDirection:'row',
+    marginHorizontal:250
+  },
 
-}
+  textoSwitch:{
+    lineHeight:10,
+    margin:25,
+    marginTop:-50,
+    flexDirection:'row',
+    
+  },
 
+  botao:{
+    height: 45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'blue',
+    borderRadius: 150,
+    margin: 40,
+    fontSize:50
+  },
+
+  textoBotao:{
+    fontSize:28
+  }
 });
+
 
 export default App;
